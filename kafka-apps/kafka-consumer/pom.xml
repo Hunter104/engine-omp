@@ -12,12 +12,6 @@
         <version>1.0.0</version>
     </parent>
 
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>com.pspd</groupId>
@@ -42,7 +36,7 @@
                             <finalName>kafka-consumer</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.example.producer.ProducerApp</mainClass>
+                                    <mainClass>com.pspd.ConsumerApp</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

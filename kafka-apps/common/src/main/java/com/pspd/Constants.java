@@ -1,4 +1,4 @@
-package org.example;
+package com.pspd;
 
 public class Constants {
     public static final String BOOTSTRAP_SERVERS = "localhost:9092";

@@ -1,4 +1,4 @@
-package org.example;
+package com.pspd;
 
 import com.google.gson.Gson;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -6,7 +6,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import java.time.Duration;
 import java.util.Properties;
 
-public class Main {
+public class ConsumerApp {
     public static void main(String[] args) {
         Properties props = new Properties();
         props.put("bootstrap.servers", Constants.BOOTSTRAP_SERVERS);
