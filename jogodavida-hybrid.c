@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#define EXP_DIMENSAO_MIN 3
-#define EXP_DIMENSAO_MAX 10
-
 #define indice_2d(linha, coluna, dimensao) (linha) * ((dimensao) + 2) + (coluna)
 
 typedef struct {
@@ -253,6 +250,18 @@ void executar_teste(int expoente_dimensao, info_mpi_t *info) {
 }
 
 int main(int argc, char **argv) {
+  int dim_min, dim_max;
+  if (argc < 3) {
+    fprintf(stderr, "Usage: %s <dimensao_minima> <dimensao_maxima>\n", argv[0]);
+    return EXIT_FAILURE;
+  }
+  dim_min = atoi(argv[1]);
+  dim_max = atoi(argv[2]);
+  if (dim_min > dim_max || dim_min < 1 || dim_max < 1) {
+    fprintf(stderr, "Invalid dimensions");
+    return EXIT_FAILURE;
+  }
+
   MPI_Init(&argc, &argv);
 
   info_mpi_t info_mpi;
@@ -260,8 +269,7 @@ int main(int argc, char **argv) {
   MPI_Comm_size(MPI_COMM_WORLD, &info_mpi.num_processos);
   MPI_Comm_rank(MPI_COMM_WORLD, &info_mpi.id_processo);
 
-  for (int expoente = EXP_DIMENSAO_MIN; expoente <= EXP_DIMENSAO_MAX;
-       expoente++)
+  for (int expoente = dim_min; expoente <= dim_max; expoente++)
     executar_teste(expoente, &info_mpi);
 
   MPI_Finalize();
