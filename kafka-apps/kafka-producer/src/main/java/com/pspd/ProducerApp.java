@@ -1,6 +1,5 @@
 package com.pspd;
 
-import com.google.gson.Gson;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 

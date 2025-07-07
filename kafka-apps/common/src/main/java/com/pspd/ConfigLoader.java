@@ -32,4 +32,5 @@ public class ConfigLoader {
     public static final String GROUP_ID = getProperty("kafka.group.id");
     public static final String TOPIC = getProperty("kafka.topic");
     public static final String EXECUTABLE = getProperty("app.executable");
+    public static final String MAX_POLLING_TIMEOUT = getProperty("kafka.max.poll.interval.ms");
 }

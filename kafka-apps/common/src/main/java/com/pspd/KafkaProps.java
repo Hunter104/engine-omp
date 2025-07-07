@@ -11,6 +11,7 @@ public class KafkaProps {
 
         props.put("connections.max.idle.ms", "5000");
         props.put("request.timeout.ms", "10000");
+        props.put("max.poll.interval.ms", ConfigLoader.MAX_POLLING_TIMEOUT);
         return props;
     }
 
