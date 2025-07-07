@@ -1,72 +1,60 @@
 package com.pspd;
 
 import com.google.gson.Gson;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.Duration;
 import java.util.Properties;
-import java.util.concurrent.CompletableFuture;
-
-import static com.pspd.ConfigLoader.EXECUTABLE;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConsumerApp {
-    private static void runGameOfLife(Message message) throws IOException, InterruptedException {
-        String command = String.format("mpirun -np 4 %s %d %d", EXECUTABLE, message.powMin(), message.powMax());
-        System.out.println("Executing: " + command);
-        Process process = Runtime.getRuntime().exec(command);
-        int exitCode = process.waitFor();
-        CompletableFuture<Void> stdoutFuture = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                }
-            } catch (IOException e) {
-                System.err.println("Error reading stdout: " + e.getMessage());
-            }
-        });
+    private static final Logger logger = LoggerFactory.getLogger(ConsumerApp.class);
+    private static final BlockingQueue<ConsumerRecord<String, Message>> queue = new LinkedBlockingQueue<>(1000);
+    private static final GameofLifeEngine executor = new GameofLifeEngine();
 
-        CompletableFuture<Void> stderrFuture = CompletableFuture.runAsync(() -> {
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    System.err.println(line);
-                }
-            } catch (IOException e) {
-                System.err.println("Error reading stderr: " + e.getMessage());
-            }
-        });
-
-        stdoutFuture.join();
-        stderrFuture.join();
-        if (exitCode != 0) {
-            throw new RuntimeException("Process exited with code " + exitCode);
+    private static void consumeRecord(ConsumerRecord<String, Message> record) {
+        try {
+            queue.put(record);
+            logger.info("Enqueued record: {}", record.value());
+        } catch (InterruptedException e) {
+            logger.warn("Interrupted while waiting to enqueue record", e);
+            Thread.currentThread().interrupt();
         }
     }
-    public static void main(String[] args) {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", ConfigLoader.BOOTSTRAP_SERVERS);
-        props.put("group.id", ConfigLoader.GROUP_ID);
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
-        Gson gson = new Gson();
-        KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
-
-        consumer.subscribe(java.util.List.of(ConfigLoader.TOPIC));
+    private static void recordProcessingThread() {
         while (true) {
-            consumer.poll(Duration.ofMillis(100)).forEach(record -> {
-                Message message = gson.fromJson(record.value(), Message.class);
-                System.out.println("Got: " + message + " executing...");
-               try {
-                   runGameOfLife(message);
-               } catch (Exception e) {
-                   System.err.println("Error executing game of life: " + e.getMessage());
-               }
-            });
+            try {
+                ConsumerRecord<String, Message> record = queue.take();
+                logger.info("Processing: {}", record.value());
+                executor.runGameOfLife(record.value());
+            } catch (InterruptedException e) {
+                logger.info("Processing interrupted, exiting");
+                Thread.currentThread().interrupt();
+                break;
+            } catch (Exception e) {
+                logger.error("Error processing record: {}", e.getMessage());
+            }
         }
     }
+
+    public static void main(String[] args) {
+        logger.info("Loading properties...");
+        Properties props = KafkaProps.getConsumerProps();
+        logger.info("Starting consumer...");
+        KafkaConsumer<String, Message> consumer = new KafkaConsumer<>(props);
+        logger.info("Subscribing to topic...");
+        consumer.subscribe(java.util.List.of(ConfigLoader.TOPIC));
+
+        Thread processorThread = new Thread(ConsumerApp::recordProcessingThread);
+        processorThread.start();
+
+        logger.info("Polling for messages...");
+        while (true) consumer.poll(Duration.ofMillis(100)).forEach(ConsumerApp::consumeRecord);
+    }
+
 }
