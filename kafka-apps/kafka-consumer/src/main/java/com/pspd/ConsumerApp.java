@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
-import static com.pspd.Constants.EXECUTABLE;
+import static com.pspd.ConfigLoader.EXECUTABLE;
 
 public class ConsumerApp {
     private static void runGameOfLife(Message message) throws IOException, InterruptedException {
@@ -48,15 +48,15 @@ public class ConsumerApp {
     }
     public static void main(String[] args) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", Constants.BOOTSTRAP_SERVERS);
-        props.put("group.id", Constants.GROUP_ID);
+        props.put("bootstrap.servers", ConfigLoader.BOOTSTRAP_SERVERS);
+        props.put("group.id", ConfigLoader.GROUP_ID);
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 
         Gson gson = new Gson();
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
 
-        consumer.subscribe(java.util.List.of(Constants.TOPIC));
+        consumer.subscribe(java.util.List.of(ConfigLoader.TOPIC));
         while (true) {
             consumer.poll(Duration.ofMillis(100)).forEach(record -> {
                 Message message = gson.fromJson(record.value(), Message.class);

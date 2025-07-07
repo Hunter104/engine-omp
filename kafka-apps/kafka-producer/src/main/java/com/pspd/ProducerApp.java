@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class ProducerApp {
     public static void main(String[] args) {
         Properties props = new Properties();
-        props.put("bootstrap.servers", "localhost:9092");
+        props.put("bootstrap.servers", ConfigLoader.BOOTSTRAP_SERVERS);
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
@@ -31,7 +31,7 @@ public class ProducerApp {
                 Message message = new Message(Integer.parseInt(nums[0]), Integer.parseInt(nums[1]));
                 String json = gson.toJson(message);
                 System.out.println("Sending: " + json);
-                producer.send(new ProducerRecord<>(Constants.TOPIC, json));
+                producer.send(new ProducerRecord<>(ConfigLoader.TOPIC, json));
             }
         } catch (NumberFormatException e) {
             System.err.println("Invalid input");
