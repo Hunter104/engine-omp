@@ -13,7 +13,17 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class ConsumerApp {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerApp.class);
     private static final BlockingQueue<ConsumerRecord<String, Message>> queue = new LinkedBlockingQueue<>(1000);
-    private static final GameOfLifeExecutor executor = new LocalExecutor();
+    private static final GameOfLifeExecutor executor;
+
+    static {
+        if (ConfigLoader.ENVIRONMENT.equalsIgnoreCase("local") ){
+            logger.info("Running in local mode");
+            executor = new LocalExecutor();
+        } else {
+            logger.info("Running in distributed mode");
+            executor = new DistributedExecutor();
+        }
+    }
 
     private static void consumeRecord(ConsumerRecord<String, Message> record) {
         try {

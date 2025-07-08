@@ -1,0 +1,45 @@
+apiVersion: kubeflow.org/v2beta1
+kind: MPIJob
+metadata:
+  name: ${job.name}
+  namespace: ${job.namespace}
+spec:
+  slotsPerWorker: ${mpi.slotsPerWorker}
+  runPolicy:
+    cleanPodPolicy: running
+  mpiReplicaSpecs:
+    Launcher:
+      replicas: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: mpi-launcher
+              image: ${job.image}
+              command:
+                - mpirun
+                - --allow-run-as-root
+                - -np
+                - "${mpi.workerReplicas}"
+                - -bind-to
+                - none
+                - -map-by
+                - slot
+                - "${job.executable}"
+                - "${job.powMin}"
+                - "${job.powMax}"
+              resources:
+                requests:
+                  memory: ${resources.requests.memory}
+                  cpu: ${resources.requests.cpu}
+                limits:
+                  memory: ${resources.limits.memory}
+                  cpu: ${resources.limits.cpu}
+    Worker:
+      replicas: ${mpi.workerReplicas}
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: mpi-worker
+              image: ${job.image}

@@ -30,4 +30,7 @@ public class ConfigLoader {
     public static final String GROUP_ID = configs.getString("kafka.group.id");
     public static final String TOPIC = configs.getString("kafka.topic");
     public static final String EXECUTABLE = configs.getString("app.executable");
+    public static final String ENVIRONMENT = configs.getString("app.environment", "local");
+    public static final String IMAGE = configs.getString("app.image");
+    public static final String NAMESPACE = configs.getString("app.namespace");
 }
