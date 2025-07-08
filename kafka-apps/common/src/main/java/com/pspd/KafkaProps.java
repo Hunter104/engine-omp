@@ -9,9 +9,9 @@ public class KafkaProps {
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
+        // TODO: propriedade de timeout de polling atualmente ignorada
         props.put("connections.max.idle.ms", "5000");
         props.put("request.timeout.ms", "10000");
-        props.put("max.poll.interval.ms", ConfigLoader.MAX_POLLING_TIMEOUT);
         return props;
     }
 
