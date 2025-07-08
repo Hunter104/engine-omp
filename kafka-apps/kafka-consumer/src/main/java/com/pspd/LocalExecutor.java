@@ -55,7 +55,7 @@ public class LocalExecutor implements  GameOfLifeExecutor{
     private CompletableFuture<String> readOutputStream(InputStream inputStream) {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            reader.lines().forEach(builder::append);
+            reader.lines().forEach(l -> builder.append(l).append("\n"));
         } catch (IOException e) {
             logger.error("Error reading output stream: {}", e.getMessage());
         }
