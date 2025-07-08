@@ -22,11 +22,11 @@ Configurações de host e tal estão no módulo common.
 **Produtor:**
 
 ```bash
-java -cp kafka-producer/target/kafka-producer.jar:common/target/common-1.0.0.jar com.pspd.ProducerApp
+java -jar kafka-producer/target/kafka-producer.jar
 ```
 
 **Consumidor:**
 
 ```bash
-java -cp kafka-consumer/target/kafka-consumer.jar:common/target/common-1.0.0.jar com.pspd.ConsumerApp
+java -jar kafka-consumer/target/kafka-consumer.jar
 ```
