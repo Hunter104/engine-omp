@@ -19,7 +19,7 @@ spec:
                 - mpirun
                 - --allow-run-as-root
                 - -np
-                - "${mpi.orkerReplicas}"
+                - "${mpi.workerReplicas}"
                 - -bind-to
                 - none
                 - -map-by
