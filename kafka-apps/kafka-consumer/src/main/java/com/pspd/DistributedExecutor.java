@@ -28,7 +28,7 @@ public class DistributedExecutor implements GameOfLifeExecutor {
         }
     }
 
-    public void runGameOfLife(Message params) {
+    public void runGameOfLife(GameOfLifeArgs params) {
         String jobName = "game-of-life-" + UUID.randomUUID().toString().substring(0, 8);
 
         StringSubstitutor sub = new StringSubstitutor(createJobConfig(jobName, params.powMin(), params.powMax()));

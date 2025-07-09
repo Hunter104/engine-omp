@@ -18,7 +18,7 @@ public class KafkaProps {
     public static Properties getConsumerProps() {
         Properties props = getProperties();
         props.put("value.deserializer", "com.pspd.GsonDeserializer");
-        props.put("gson.deserializer.type", Message.class.getName());
+        props.put("gson.deserializer.type", GameOfLifeArgs.class.getName());
         props.put("group.id", ConfigLoader.GROUP_ID);
         return props;
     }

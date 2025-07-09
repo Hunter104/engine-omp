@@ -31,7 +31,7 @@ public class LocalExecutor implements  GameOfLifeExecutor {
         logger.info("Local GOL Executor checking complete");
     }
 
-    public void runGameOfLife(Message params) {
+    public void runGameOfLife(GameOfLifeArgs params) {
         int exitCode;
         try {
             String command = String.format("mpirun -np 1 %s %d %d", EXECUTABLE, params.powMin(), params.powMax());

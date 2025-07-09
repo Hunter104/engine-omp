@@ -12,7 +12,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ConsumerApp {
     private static final Logger logger = LoggerFactory.getLogger(ConsumerApp.class);
-    private static final BlockingQueue<ConsumerRecord<String, Message>> queue = new LinkedBlockingQueue<>(1000);
+    private static final BlockingQueue<ConsumerRecord<String, GameOfLifeArgs>> queue = new LinkedBlockingQueue<>(1000);
     private static final GameOfLifeExecutor executor;
 
     static {
@@ -25,7 +25,7 @@ public class ConsumerApp {
         }
     }
 
-    private static void consumeRecord(ConsumerRecord<String, Message> record) {
+    private static void consumeRecord(ConsumerRecord<String, GameOfLifeArgs> record) {
         try {
             queue.put(record);
             logger.info("Enqueued record: {}", record.value());
@@ -38,7 +38,7 @@ public class ConsumerApp {
     private static void recordProcessingThread() {
         while (true) {
             try {
-                ConsumerRecord<String, Message> record = queue.take();
+                ConsumerRecord<String, GameOfLifeArgs> record = queue.take();
                 logger.info("Processing: {}", record.value());
                 executor.runGameOfLife(record.value());
             } catch (InterruptedException e) {
@@ -55,7 +55,7 @@ public class ConsumerApp {
         logger.info("Loading properties...");
         Properties props = KafkaProps.getConsumerProps();
         logger.info("Starting consumer...");
-        KafkaConsumer<String, Message> consumer = new KafkaConsumer<>(props);
+        KafkaConsumer<String, GameOfLifeArgs> consumer = new KafkaConsumer<>(props);
         logger.info("Subscribing to topic...");
         consumer.subscribe(java.util.List.of(ConfigLoader.TOPIC));
 
