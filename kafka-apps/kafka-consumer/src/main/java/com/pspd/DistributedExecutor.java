@@ -13,14 +13,16 @@ import java.io.IOException;
 
 public class DistributedExecutor implements GameOfLifeExecutor {
     private final Logger logger = LoggerFactory.getLogger(DistributedExecutor.class);
-    private final KubernetesClient kubernetesClient;
+    private final KubernetesClient kubernetesClient = new KubernetesClientBuilder().build();
     private final String jobTemplate;
 
     public DistributedExecutor() {
-        kubernetesClient = new KubernetesClientBuilder().build();
+        logger.info("Starting distributed executor");
+        logger.info("Loading job template...");
         try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("/job-template.yaml")) {
             assert is != null;
             jobTemplate = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            logger.info("Job template loaded successfully");
         } catch (IOException e) {
             throw new RuntimeException("Failed to load job template", e);
         }

@@ -12,12 +12,14 @@ import java.util.concurrent.CompletableFuture;
 import static com.pspd.ConfigLoader.EXECUTABLE;
 
 // TODO: WIP, adicionar mpi funfando com kubernetes
-public class LocalExecutor implements  GameOfLifeExecutor{
+public class LocalExecutor implements  GameOfLifeExecutor {
     private final Logger logger = LoggerFactory.getLogger(LocalExecutor.class);
 
     public LocalExecutor() {
         int exitCode;
+        logger.info("Local GOL Executor starting...");
         try {
+            logger.info("Checking executable: {}", EXECUTABLE);
             Process process = Runtime.getRuntime().exec("which " + ConfigLoader.EXECUTABLE);
             exitCode = process.waitFor();
         } catch (IOException | InterruptedException e) {
@@ -25,6 +27,8 @@ public class LocalExecutor implements  GameOfLifeExecutor{
         }
         if (exitCode != 0)
             throw new RuntimeException("Executable not found: " + ConfigLoader.EXECUTABLE);
+        logger.info("Executable found: {}", EXECUTABLE);
+        logger.info("Local GOL Executor checking complete");
     }
 
     public void runGameOfLife(Message params) {
