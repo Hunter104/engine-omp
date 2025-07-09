@@ -40,7 +40,6 @@ public class DistributedExecutor implements GameOfLifeExecutor {
         Map<String, String> config = new HashMap<>();
 
         config.put("job.name", jobName);
-        config.put("job.namespace", ConfigLoader.NAMESPACE);
         config.put("job.image", ConfigLoader.IMAGE);
         config.put("job.executable", ConfigLoader.EXECUTABLE);
         config.put("job.powMin", String.valueOf(powMin));

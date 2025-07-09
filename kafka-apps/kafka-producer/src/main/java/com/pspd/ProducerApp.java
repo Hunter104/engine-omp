@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ProducerApp {
     public static void main(String[] args) {
-        Properties props = KafkaProps.getProducerProps();
+        Properties props = ConfigLoader.getProducerProps();
         System.out.println("Producer started, enter min and max values separated by a space (quit with exit):");
         try (KafkaProducer<String, GameOfLifeArgs> producer = new KafkaProducer<>(props); Scanner scanner = new Scanner(System.in)) {
             while (true) {
@@ -20,7 +20,7 @@ public class ProducerApp {
                 String[] nums = input.split(" ");
                 GameOfLifeArgs gameOfLifeArgs = new GameOfLifeArgs(Integer.parseInt(nums[0]), Integer.parseInt(nums[1]));
                 System.out.println("Sending: " + gameOfLifeArgs);
-                producer.send(new ProducerRecord<>(ConfigLoader.TOPIC, gameOfLifeArgs));
+                producer.send(new ProducerRecord<>(props.getProperty("app.topic"), gameOfLifeArgs));
             }
         } catch (NumberFormatException e) {
             System.err.println("Invalid input");

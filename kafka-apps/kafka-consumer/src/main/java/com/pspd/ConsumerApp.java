@@ -53,11 +53,11 @@ public class ConsumerApp {
 
     public static void main(String[] args) {
         logger.info("Loading properties...");
-        Properties props = KafkaProps.getConsumerProps();
+        Properties props = ConfigLoader.getConsumerProps();
         logger.info("Starting consumer...");
         KafkaConsumer<String, GameOfLifeArgs> consumer = new KafkaConsumer<>(props);
         logger.info("Subscribing to topic...");
-        consumer.subscribe(java.util.List.of(ConfigLoader.TOPIC));
+        consumer.subscribe(java.util.List.of(props.getProperty("app.topic")));
 
         Thread processorThread = new Thread(ConsumerApp::recordProcessingThread);
         processorThread.start();

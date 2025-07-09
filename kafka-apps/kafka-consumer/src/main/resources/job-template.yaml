@@ -2,7 +2,6 @@ apiVersion: kubeflow.org/v2beta1
 kind: MPIJob
 metadata:
   name: ${job.name}
-  namespace: ${job.namespace}
 spec:
   slotsPerWorker: ${mpi.slotsPerWorker}
   runPolicy:
