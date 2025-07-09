@@ -20,7 +20,7 @@ spec:
                 - mpirun
                 - --allow-run-as-root
                 - -np
-                - "${mpi.workerReplicas}"
+                - "${mpi.orkerReplicas}"
                 - -bind-to
                 - none
                 - -map-by
@@ -28,13 +28,6 @@ spec:
                 - "${job.executable}"
                 - "${job.powMin}"
                 - "${job.powMax}"
-              resources:
-                requests:
-                  memory: ${resources.requests.memory}
-                  cpu: ${resources.requests.cpu}
-                limits:
-                  memory: ${resources.limits.memory}
-                  cpu: ${resources.limits.cpu}
     Worker:
       replicas: ${mpi.workerReplicas}
       template:
