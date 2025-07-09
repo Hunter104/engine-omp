@@ -47,7 +47,7 @@ public class DistributedExecutor implements GameOfLifeExecutor {
 
         // TODO: Definir número de workers dinamicamente
         config.put("mpi.slotsPerWorker", "1");
-        config.put("mpi.workerReplicas", "4");
+        config.put("mpi.workerReplicas", "2");
 
         return config;
     }

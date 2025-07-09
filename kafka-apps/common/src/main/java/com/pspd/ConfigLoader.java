@@ -20,9 +20,12 @@ public class ConfigLoader {
         configs.setThrowExceptionOnMissing(true);
         try {
             kafkaClientProps.load(ConfigLoader.class.getResourceAsStream("/kafka.properties"));
+            logger.info("Finished reading kafa client properties");
+
             configs.addConfiguration(new SystemConfiguration());
             configs.addConfiguration(new EnvironmentConfiguration());
             configs.addConfiguration(helper.properties(new File("config.properties")));
+            logger.info("Finished loading app configurations");
 
             logger.info("Configuration loaded succesfully");
         } catch (ConfigurationException | IOException e) {
