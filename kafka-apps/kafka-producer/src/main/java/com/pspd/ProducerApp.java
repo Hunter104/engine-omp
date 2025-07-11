@@ -24,7 +24,7 @@ public class ProducerApp {
                 String[] nums = input.split(" ");
                 GameOfLifeArgs gameOfLifeArgs = new GameOfLifeArgs(Integer.parseInt(nums[0]), Integer.parseInt(nums[1]));
                 System.out.println("Sending: " + gameOfLifeArgs);
-                producer.send(new ProducerRecord<>(props.getProperty("app.topic"), gameOfLifeArgs));
+                producer.send(new ProducerRecord<>(ConfigLoader.TOPIC, gameOfLifeArgs));
             }
         } catch (NumberFormatException e) {
             logger.error("Invalid input: {}", e.getMessage());
