@@ -1,22 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configuration xmlns="http://commons.apache.org/configuration2"
-               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-               xsi:noNamespaceSchemaLocation="http://commons.apache.org/configuration2/combinedConfiguration.xsd">
-
-    <combinedConfiguration>
-
-        <!-- External app config, optional -->
-        <propertiesConfiguration name="externalAppConfig" fileName="config.properties" optional="true"/>
-
-        <!-- Classpath app config fallback -->
-        <propertiesConfiguration name="classpathAppConfig" resource="config.properties"/>
-
-        <!-- External kafka config, optional -->
-        <propertiesConfiguration name="externalKafkaConfig" fileName="kafka.properties" optional="true"/>
-
-        <!-- Classpath kafka config fallback -->
-        <propertiesConfiguration name="classpathKafkaConfig" resource="kafka.properties"/>
-
-    </combinedConfiguration>
-
-</configuration
+<configuration>
+    <properties fileName="kafka.properties"/>
+    <system/>
+    <env/>
+    <properties fileName="app.properties" config-optional="true" basePath="."/>
+    <properties fileName="app.properties"/>
+</configuration>
