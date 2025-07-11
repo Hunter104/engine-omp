@@ -1,0 +1,14 @@
+# --- Override Configs ---
+# Settings defined here will override default values
+
+# === Application Settings ===
+app.environment=
+app.executable=
+app.image=
+
+# === Kafka Broker Settings ===
+kafka.bootstrap.servers=
+kafka.group.id=
+kafka.topic=
+kafka.connections.max.idle.ms=
+kafka.request.timeout.ms=
