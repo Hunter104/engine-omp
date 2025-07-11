@@ -4,14 +4,13 @@ import org.apache.commons.configuration2.*;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.commons.configuration2.tree.OverrideCombiner;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 public class ConfigLoader {
     private static final Logger logger = LoggerFactory.getLogger(ConfigLoader.class);
@@ -50,28 +49,20 @@ public class ConfigLoader {
         }
     }
 
-    public static final String EXECUTABLE = appConfig.getString("app.executable");
-    public static final String ENVIRONMENT = appConfig.getString("app.environment", "local");
-    public static final String IMAGE = appConfig.getString("app.image");
-    public static final String TOPIC = appConfig.getString("kafka.topic");
-
-    private static List<Properties> getWithPrefix(Configuration config, String prefix) {
-        throw new NotImplementedException();
+    private static Map<String, String> filterAndRemovePrefix(Configuration config, String prefix) {
+        return ConfigurationConverter.getMap(config).entrySet().stream()
+                .filter(entry -> ((String) entry.getKey()).startsWith(prefix))
+                .collect(Collectors.toMap(
+                        entry -> ((String) entry.getKey()).substring(prefix.length()+1),
+                        entry -> String.valueOf(entry.getValue())
+                ));
     }
+
     public static Properties getConsumerProps() {
         Properties props = new Properties();
 
-        appConfig.getKeys().forEachRemaining(key -> {
-            if (key.startsWith("kafka.")) {
-                props.put(key.substring(6), appConfig.getString(key));
-            }
-        });
-
-        kafkaConfig.getKeys().forEachRemaining(key -> {
-            if (key.startsWith("kafka.")) {
-                props.put(key.substring(6), kafkaConfig.getString(key));
-            }
-        });
+        props.putAll(filterAndRemovePrefix(appConfig, "kafka"));
+        props.putAll(filterAndRemovePrefix(kafkaConfig, "kafka"));
 
         return props;
     }
@@ -81,4 +72,9 @@ public class ConfigLoader {
         props.remove("group.id");
         return props;
     }
+
+    public static final String EXECUTABLE = appConfig.getString("app.executable");
+    public static final String ENVIRONMENT = appConfig.getString("app.environment", "local");
+    public static final String IMAGE = appConfig.getString("app.image");
+    public static final String TOPIC = appConfig.getString("kafka.topic");
 }
