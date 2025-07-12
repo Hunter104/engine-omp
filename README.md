@@ -33,19 +33,40 @@ Obs: precisa ter o maven instalado
 A prioridade de configuração é, em ordem:
 
 1. Propriedades de sistema/jvm
-2. Variáveis de ambiente
-3. config.properties do módulo commons
+2. app.properties externo
+3. app.properties do módulo commons (valores padrão, compilados no jar)
 
-na raíz do projeto há um arquivo .env.example para demonstração de configuração
+na raíz do projeto há um arquivo app.properties.example com todas as propriedades que podem
+ser editadas.
+
+a variável `app.environment` define o ambiente de execução, que pode ser `local` (rodar o mpi
+localmente) ou `distributed` (rodar o mpi distribuído com kubernetes).
+
+Propriedades de sistema são passadas ao executar o jar, por exemplo:
+
+```bash
+java -Dapp.environment=local -jar kafka-producer/target/kafka-producer.jar
+```
+
+Elas podem ser passadas externamente pela variável \_JAVA_OPTIONS
+ou diretamente no terminal, por exemplo:
+
+```bash
+export _JAVA_OPTIONS="-Dapp.environment=local"
+java -jar kafka-producer/target/kafka-producer.jar
+```
+
+Suporte para variáveis de ambiente não foi implementado,
+pois precisa-se de um mecanismo para conversão de nomes de variáveis
+para nomes de propriedades.
 
 ## Como executar
 
 Certifique-se de que o Kafka está rodando.
-Configurações de host e tal estão no módulo common.
+Configurações de host de acordo com o tópico acima.
 
-Certifique-se que o motor foi compilaod e o executável está em PATH,
-OU que o caminho do executável está configurado na variável de ambiente `app.executable`,
-ou em outras formas de configuração listadas acima
+Certifique-se que o motor de configuração está em PATH (configuração padrão)
+ou modifique a properiedade `app.executable` para o path do executável.
 
 **Produtor:**
 
@@ -59,3 +80,9 @@ java -jar kafka-producer/target/kafka-producer.jar
 java -jar kafka-consumer/target/kafka-consumer.jar
 ```
 
+## Docker
+
+Por enquanto apenas o Dockerfile.gateway está implementado,
+que é o gateway feito em java pro kafka, o projeto também
+acompanha um arquivo docker-compose.yml (que não está pronto)
+para rodar o consumidor e kafka em contêiners.

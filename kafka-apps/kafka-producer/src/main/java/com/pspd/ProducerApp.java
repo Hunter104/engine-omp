@@ -26,6 +26,8 @@ public class ProducerApp {
 
                 processLine(input, producer);
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Error while processing input", e);
         }
 
         System.out.println("Producer stopped");

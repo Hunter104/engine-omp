@@ -1,7 +1,6 @@
 <configuration>
     <properties fileName="kafka.properties"/>
     <system/>
-    <env/>
     <properties fileName="app.properties" config-optional="true" basePath="."/>
     <properties fileName="app.properties"/>
 </configuration>
