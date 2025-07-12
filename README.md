@@ -86,3 +86,5 @@ Por enquanto apenas o Dockerfile.gateway está implementado,
 que é o gateway feito em java pro kafka, o projeto também
 acompanha um arquivo docker-compose.yml (que não está pronto)
 para rodar o consumidor e kafka em contêiners.
+
+O Dockerfile do worker mpi está em desenvolvimento.

@@ -16,6 +16,7 @@ COPY kafka-apps .
 RUN mvn clean install
 
 FROM amazoncorretto:17-alpine3.21
+RUN apk add --no-cache openmpi
 WORKDIR /app
 COPY --from=build /app/kafka-consumer/target/kafka-consumer.jar app.jar
 COPY --from=c-build /app/build/gol-hybrid /usr/local/bin/gol-hybrid

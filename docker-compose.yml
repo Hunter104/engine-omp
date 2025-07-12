@@ -35,7 +35,7 @@ services:
     depends_on:
       - kafka
     environment:
-      - _JAVA_OPTIONS=-Dkafka.bootstrap.servers=kafka:29092
+      - _JAVA_OPTIONS=-Dkafka.bootstrap.servers=kafka:29092 -Dapp.environment=distributed
     networks:
       - kafka-net
 

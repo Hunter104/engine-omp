@@ -19,8 +19,8 @@ public class DistributedExecutor implements GameOfLifeExecutor {
     public DistributedExecutor() {
         logger.info("Starting distributed executor");
         logger.info("Loading job template...");
-        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("/job-template.yaml")) {
-            assert is != null;
+        try (InputStream is = this.getClass().getClassLoader().getResourceAsStream("job-template.yaml")) {
+            if (is == null) throw new RuntimeException("Failed to load job template");
             jobTemplate = new String(is.readAllBytes(), StandardCharsets.UTF_8);
             logger.info("Job template loaded successfully");
         } catch (IOException e) {
@@ -29,10 +29,15 @@ public class DistributedExecutor implements GameOfLifeExecutor {
     }
 
     public void runGameOfLife(GameOfLifeArgs params) {
-        String jobName = "game-of-life-" + UUID.randomUUID().toString().substring(0, 8);
+        logger.info("Creating MPI job...");
 
+        String jobName = "game-of-life-" + UUID.randomUUID().toString().substring(0, 8);
         StringSubstitutor sub = new StringSubstitutor(createJobConfig(jobName, params.powMin(), params.powMax()));
-        kubernetesClient.resource(sub.replace(jobTemplate)).create();
+        String resource = sub.replace(jobTemplate);
+        logger.info("instatiated resource template");
+
+        logger.info("creating kubernetes resource...");
+        kubernetesClient.resource(resource).create();
         logger.info("Created MPI job: {}", jobName);
     }
 
